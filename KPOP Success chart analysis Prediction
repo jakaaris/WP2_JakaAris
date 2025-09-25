@@ -1,0 +1,263 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNbZfAtl8RJqgWMlp7V7g5F",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/jakaaris/WP2_JakaAris/blob/master/KPOP%20Success%20chart%20analysis%20Prediction\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 51,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "r0KpQXS686yv",
+        "outputId": "8340dab8-6d6d-4923-c3fa-6a9f1b572e89"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Using Colab cache for faster access to the 'k-pop-astrology-debut-charts-and-success' dataset.\n",
+            "Path to dataset files: /kaggle/input/k-pop-astrology-debut-charts-and-success\n"
+          ]
+        }
+      ],
+      "source": [
+        "import kagglehub\n",
+        "\n",
+        "# Download latest version\n",
+        "path = kagglehub.dataset_download(\"carolinacanchila/k-pop-astrology-debut-charts-and-success\")\n",
+        "\n",
+        "print(\"Path to dataset files:\", path)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "\n",
+        "# Muat data dari file CSV\n",
+        "df = pd.read_csv(\"/kaggle/input/k-pop-astrology-debut-charts-and-success/kpop_group_debut_astrology.csv\")\n",
+        "\n",
+        "# Tampilkan 5 baris pertama data\n",
+        "print(\"Tabel data (5 baris pertama):\")\n",
+        "print(df.head())\n",
+        "\n",
+        "\n",
+        "\n",
+        "# Periksa informasi data, termasuk tipe data dan nilai yang hilang\n",
+        "print(\"\\nInformasi data:\")\n",
+        "print(df.info())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dnkSKid2-vSj",
+        "outputId": "a0abd4f0-97ad-46ef-98e3-c921c41e67ff"
+      },
+      "execution_count": 52,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Tabel data (5 baris pertama):\n",
+            "      group_name                  company    status  group_type  paks  \\\n",
+            "0        BIGBANG    YG Entertainment Inc.  Inactive   Boy Group     7   \n",
+            "1  Busker Busker          Chungchun Music  Inactive   Boy Group     3   \n",
+            "2       NewJeans                     ADOR  Inactive  Girl Group     2   \n",
+            "3         Sistar   Starship Entertainment  Inactive  Girl Group     2   \n",
+            "4         Miss A  JYP Entertainment Corp.  Inactive  Girl Group     2   \n",
+            "\n",
+            "   music_show_awards  end_year_awards  physical_sales  organic_youtube_views  \\\n",
+            "0                 84               46         3514210             4589887632   \n",
+            "1                 10               10          344002               44241494   \n",
+            "2                 35               32         8278782             2296351136   \n",
+            "3                 48               25          137519              957775756   \n",
+            "4                 16               12          111748              502828620   \n",
+            "\n",
+            "   debut_date  ... mercury_sign mercury_rx venus_sign venus_rx mars_sign  \\\n",
+            "0  2006-08-19  ...          Leo          0        Leo        0     Virgo   \n",
+            "1  2012-04-02  ...       Pisces          1     Taurus        0     Virgo   \n",
+            "2  2022-07-22  ...          Leo          0     Cancer        0    Taurus   \n",
+            "3  2010-06-03  ...       Taurus          0     Cancer        0       Leo   \n",
+            "4  2010-06-30  ...       Cancer          0        Leo        0     Virgo   \n",
+            "\n",
+            "  mars_rx jupiter_sign jupiter_rx  saturn_sign saturn_rx  \n",
+            "0       0      Scorpio          0          Leo         0  \n",
+            "1       1       Taurus          0        Libra         1  \n",
+            "2       0        Aries          0     Aquarius         1  \n",
+            "3       0       Pisces          0        Virgo         0  \n",
+            "4       0        Aries          0        Virgo         0  \n",
+            "\n",
+            "[5 rows x 27 columns]\n",
+            "\n",
+            "Informasi data:\n",
+            "<class 'pandas.core.frame.DataFrame'>\n",
+            "RangeIndex: 120 entries, 0 to 119\n",
+            "Data columns (total 27 columns):\n",
+            " #   Column                 Non-Null Count  Dtype \n",
+            "---  ------                 --------------  ----- \n",
+            " 0   group_name             120 non-null    object\n",
+            " 1   company                119 non-null    object\n",
+            " 2   status                 120 non-null    object\n",
+            " 3   group_type             120 non-null    object\n",
+            " 4   paks                   120 non-null    int64 \n",
+            " 5   music_show_awards      120 non-null    int64 \n",
+            " 6   end_year_awards        120 non-null    int64 \n",
+            " 7   physical_sales         120 non-null    int64 \n",
+            " 8   organic_youtube_views  120 non-null    int64 \n",
+            " 9   debut_date             120 non-null    object\n",
+            " 10  debut_day              120 non-null    object\n",
+            " 11  debut_time             91 non-null     object\n",
+            " 12  time_reliability       120 non-null    object\n",
+            " 13  sun_sign               120 non-null    object\n",
+            " 14  asc_sign               120 non-null    object\n",
+            " 15  moon_phase             120 non-null    object\n",
+            " 16  moon_sign              120 non-null    object\n",
+            " 17  mercury_sign           120 non-null    object\n",
+            " 18  mercury_rx             120 non-null    int64 \n",
+            " 19  venus_sign             120 non-null    object\n",
+            " 20  venus_rx               120 non-null    int64 \n",
+            " 21  mars_sign              120 non-null    object\n",
+            " 22  mars_rx                120 non-null    int64 \n",
+            " 23  jupiter_sign           120 non-null    object\n",
+            " 24  jupiter_rx             120 non-null    int64 \n",
+            " 25  saturn_sign            120 non-null    object\n",
+            " 26  saturn_rx              120 non-null    int64 \n",
+            "dtypes: int64(10), object(17)\n",
+            "memory usage: 25.4+ KB\n",
+            "None\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Menghapus kolom 'debut_time' dan 'time_reliability'\n",
+        "df = df.drop(columns=['debut_time', 'time_reliability'])"
+      ],
+      "metadata": {
+        "id": "nj9ZMEc7KQlF"
+      },
+      "execution_count": 53,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Menghapus baris jika nilai 'physical_sales' adalah NaN\n",
+        "df = df.dropna(subset=['physical_sales'])"
+      ],
+      "metadata": {
+        "id": "AyvwFOE2KqH5"
+      },
+      "execution_count": 54,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Mengubah kolom 'debut_date' ke format datetime\n",
+        "df['debut_date'] = pd.to_datetime(df['debut_date'])"
+      ],
+      "metadata": {
+        "id": "ZyOLKyhgKuXh"
+      },
+      "execution_count": 55,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Menerapkan One-Hot Encoding pada fitur kategorikal\n",
+        "categorical_features = ['company', 'group_type', 'sun_sign', 'asc_sign', 'moon_sign', 'mercury_sign', 'venus_sign', 'mars_sign', 'jupiter_sign', 'saturn_sign', 'status', 'moon_phase']\n",
+        "df = pd.get_dummies(df, columns=categorical_features, drop_first=True)"
+      ],
+      "metadata": {
+        "id": "iBiLDSqpMfQK"
+      },
+      "execution_count": 56,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.linear_model import LinearRegression\n",
+        "from sklearn.metrics import mean_absolute_error, r2_score\n",
+        "\n",
+        "# Asumsi Anda telah melakukan pra-pemrosesan data sebelumnya dan data tersimpan di 'df'\n",
+        "\n",
+        "# 1. Memisahkan fitur (X) dan target (y)\n",
+        "# Ganti nama kolom sesuai dengan hasil One-Hot Encoding Anda\n",
+        "# Pastikan untuk mengecualikan kolom 'group_name', 'debut_date', 'debut_day' and the target column ('physical_sales')\n",
+        "features = df.drop(columns=['group_name', 'physical_sales', 'debut_date', 'debut_day'])\n",
+        "target = df['physical_sales']\n",
+        "\n",
+        "# 2. Membagi data menjadi set latih dan uji\n",
+        "X_train, X_test, y_train, y_test = train_test_split(\n",
+        "    features, target, test_size=0.2, random_state=42\n",
+        ")\n",
+        "\n",
+        "# 3. Melatih model regresi linier\n",
+        "model = LinearRegression()\n",
+        "model.fit(X_train, y_train)\n",
+        "\n",
+        "# 4. Mengevaluasi model\n",
+        "y_pred = model.predict(X_test)\n",
+        "\n",
+        "mae = mean_absolute_error(y_test, y_pred)\n",
+        "r2 = r2_score(y_test, y_pred)\n",
+        "\n",
+        "print(\"Mean Absolute Error:\", mae)\n",
+        "print(\"R-squared:\", r2)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "I2u8O9IwMnTK",
+        "outputId": "83b4d109-9f8d-47e9-929c-ba28f8b9f41b"
+      },
+      "execution_count": 57,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Mean Absolute Error: 5161321.103390635\n",
+            "R-squared: 0.11476595900452258\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
